@@ -5,7 +5,6 @@ import subprocess
 import datetime
 
 def main():
-
     # Get user input
     timeInput = sys.argv[1]
     timeLocal = parser.parse(timeInput)
@@ -28,18 +27,22 @@ def main():
     subprocess.run("pbcopy", universal_newlines=True, input=str(output))
 
 def timezoneShift(timeLocal, old_timezone, new_timezone):
+    # Define timezones
     old_timezone = pytz.timezone(old_timezone)
     new_timezone = pytz.timezone(new_timezone)
-      
+    
+    # Assign timezones
     timeLocal = old_timezone.localize(timeLocal)
     timeAbroad = timeLocal.astimezone(new_timezone)
     
+    # Delete date from date-timestamp
     timeLocal = timeLocal.time()
     timeAbroad = timeAbroad.time()
 
     return timeLocal, timeAbroad
 
 def timeToString(timeLocal, timeAbroad):
+    # Return hours & minutes only
     timeLocal = timeLocal.strftime("%H:%M")
     timeAbroad = timeAbroad.strftime("%H:%M")
 
