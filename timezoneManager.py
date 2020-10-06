@@ -5,22 +5,38 @@ import subprocess
 import datetime
 
 def main():
-    # Get user input
+    # Check if user provided input
+    if len(sys.argv) < 2:
+        print("Please provide a time in any format.")
+        return 1
+
+    # Read user input time
     timeInput = sys.argv[1]
-    timeLocal = parser.parse(timeInput)
+
+    # Read user input additional timezone
+    if len(sys.argv) == 3:
+        timezoneAbroad = "Europe/" + sys.argv[2]
+    else:
+        timezoneAbroad = "Europe/Berlin"
 
     # Create both timezone objects
-    old_timezone = "Europe/London"
-    new_timezone = "Europe/Berlin"
+    timezoneLocal = "Europe/London"
+
+    # Parsing into datetime format
+    try:
+        timeLocal = parser.parse(timeInput)
+    except ValueError:
+        print('Sorry, the time format you provided could not be recognized. Please try again!')
+        return 1
 
     # Calculate timezone difference
-    timeLocal, timeAbroad = timezoneShift(timeLocal, old_timezone, new_timezone)
+    timeLocal, timeAbroad = timezoneShift(timeLocal, timezoneLocal, timezoneAbroad)
 
     # Transform times into correct string format
     timeLocal, timeAbroad = timeToString(timeLocal, timeAbroad)
 
     # Concatenate String
-    output = timeAbroad + ' ' + '\U0001F1E9\U0001F1EA' + ' GMT+2' + ' | ' + timeLocal + ' ' + '\U0001F1EC\U0001F1E7' + ' GMT+1'
+    output = timeAbroad + ' ' + ' \U0001F1E9\U0001F1EA' + ' GMT+2' + ' | ' + timeLocal + ' ' + ' \U0001F1EC\U0001F1E7' + ' GMT+1'
     print("Copied into clipboard! " + output)
 
     # Copy to clipboard
