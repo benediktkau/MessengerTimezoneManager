@@ -3,8 +3,14 @@ from dateutil import parser
 import pytz
 import subprocess
 import datetime
+import flag
 
 def main():
+    # Default local timezone
+    defaultTimezone = 'GB'
+    timezoneLocal = pytz.country_timezones[defaultTimezone][0]
+
+
     # Check if user provided input
     if len(sys.argv) < 2:
         print("Please provide a time in any format.")
@@ -15,12 +21,13 @@ def main():
 
     # Read user input additional timezone
     if len(sys.argv) == 3:
-        timezoneAbroad = "Europe/" + sys.argv[2]
+        timezoneInput = sys.argv[2]
+        try:
+            timezoneAbroad = pytz.country_timezones[timezoneInput][0]
+        except KeyError:
+            timezoneAbroad = "Europe/" + timezoneInput
     else:
         timezoneAbroad = "Europe/Berlin"
-
-    # Create both timezone objects
-    timezoneLocal = "Europe/London"
 
     # Parsing into datetime format
     try:
@@ -35,8 +42,12 @@ def main():
     # Transform times into correct string format
     timeLocal, timeAbroad = timeToString(timeLocal, timeAbroad)
 
-    # Concatenate String
-    output = timeAbroad + ' ' + ' \U0001F1E9\U0001F1EA' + ' GMT+2' + ' | ' + timeLocal + ' ' + ' \U0001F1EC\U0001F1E7' + ' GMT+1'
+    # Get flag emoji
+    flagAbroad = flag.flag(timezoneInput)
+    flagLocal = flag.flag(defaultTimezone)
+
+    # Concatenate String U0001F1E9\U0001F1EA'
+    output = flagAbroad + ' ' +  timeAbroad + ' GMT+2' + ' | ' + flagLocal + ' ' +  timeLocal + ' GMT+1'
     print("Copied into clipboard! " + output)
 
     # Copy to clipboard
